@@ -23,20 +23,31 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
-            isGrounded = false;
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
             float thisMaxY = transform.position.y + (GetComponent<SpriteRenderer>().sprite.bounds.size.y / 2f);
-            float otherMinY = collision.transform.position.y - (GetComponent<SpriteRenderer>().sprite.bounds.size.y / 2f);
-            if (thisMaxY > otherMinY)
+            float otherMinY = collision.transform.position.y - (collision.gameObject.GetComponent<SpriteRenderer>().sprite.bounds.size.y / 2f);
+            if (thisMaxY >= otherMinY)
             {
                 isGrounded = true;
             }
+            else
+            {
+                isGrounded = false;
+            }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
         }
     }
 }
